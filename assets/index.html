@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Plaid Link</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  </head>
+  <body>
+    <p id="text" align="center">Connecting to Plaid</p>
+  </body>
+  <script type="application/javascript">
+    async function sendToken(enrollment) {
+      await fetch("/token", {
+        body: JSON.stringify(enrollment),
+        method: "POST",
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const handler = Plaid.create({
+        token: window.ENV.public_token,
+        onSuccess: async (public_token, metadata) => {
+          document.getElementById("text").innerHTML =
+            "Successful. Return to the app";
+          await sendToken({ public_token, metadata });
+        },
+        onLoad: () => {
+          document.getElementById("text").innerHTML = "";
+        },
+        onExit: async (err, metadata) => {
+          document.getElementById("text").innerHTML =
+            "Failed. Return to the app";
+          await fetch("/plaid", {
+            method: "DELETE",
+          });
+        },
+        onEvent: (eventName, metadata) => {},
+      });
+
+      handler.open();
+    });
+  </script>
+</html>
