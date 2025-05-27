@@ -168,6 +168,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.6"
+  humps:
+    dependency: transitive
+    description:
+      name: humps
+      sha256: "4cb8b3bd0e21e8246edd22ea3568b4f94854d532d6695f10a056faa11eb54830"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   leak_tracker:
     dependency: transitive
     description:

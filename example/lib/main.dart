@@ -13,17 +13,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final TextEditingController _publicTokenController;
+  late final TextEditingController _linkTokenController;
 
   @override
   void initState() {
     super.initState();
-    _publicTokenController = TextEditingController();
+    _linkTokenController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _publicTokenController.dispose();
+    _linkTokenController.dispose();
     super.dispose();
   }
 
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               Center(child: Text('Welcome to the Plaid Universal Example!')),
               TextField(
-                controller: _publicTokenController,
+                controller: _linkTokenController,
                 decoration: const InputDecoration(
                   labelText: 'Enter Public Token',
                   border: OutlineInputBorder(),
@@ -51,14 +51,13 @@ class _MyAppState extends State<MyApp> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  final publicToken = _publicTokenController.text;
-                  if (publicToken.isNotEmpty) {
+                  final linkToken = _linkTokenController.text;
+                  if (linkToken.isNotEmpty) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) =>
-                                PlaidLinkPage(publicToken: publicToken),
+                            (context) => PlaidLinkPage(linkToken: linkToken),
                       ),
                     );
                   } else {
@@ -80,24 +79,30 @@ class _MyAppState extends State<MyApp> {
 }
 
 class PlaidLinkPage extends StatelessWidget {
-  final String publicToken;
-  const PlaidLinkPage({super.key, required this.publicToken});
+  final String linkToken;
+  const PlaidLinkPage({super.key, required this.linkToken});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Plaid Link')),
       body: PlaidUniversal(
-        publicToken: publicToken,
+        config: LinkTokenConfiguration(token: linkToken),
         onEnrollment: (publicToken, metadata) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Enrollment successful: $publicToken')),
           );
           debugPrint('Enrollment successful: $publicToken');
-          debugPrint('Metadata: $metadata');
+          debugPrint('Metadata: ${metadata.description()}');
           Navigator.pop(context, publicToken);
         },
-        onExit: () {
+        onEvent: (value) {
+          debugPrint('Event received: ${value.name}');
+          debugPrint('Event Metadata: ${value.metadata.description()}');
+        },
+        onExit: (exitMetadata) {
+          debugPrint('Link exited: ${exitMetadata.error?.description()}');
+          debugPrint('Exit Metadata: ${exitMetadata.metadata.description()}');
           Navigator.pop(context);
         },
       ),

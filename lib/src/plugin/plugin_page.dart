@@ -5,15 +5,18 @@ import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:plaid_universal/src/services/server.dart';
 
 class PluginPage extends StatefulWidget {
-  final VoidCallback? onExit;
+  final LinkTokenConfiguration config;
+
   final EnrollmentFn? onEnrollment;
-  final String publicToken;
+  final ValueChanged<LinkExit>? onExit;
+  final ValueChanged<LinkEvent>? onEvent;
 
   const PluginPage({
     super.key,
-    required this.publicToken,
-    this.onExit,
+    required this.config,
     this.onEnrollment,
+    this.onExit,
+    this.onEvent,
   });
 
   @override
@@ -29,13 +32,16 @@ class _PluginPageState extends State<PluginPage> {
 
     _subscriptions = [
       PlaidLink.onExit.listen((exitMetadata) {
-        widget.onExit?.call();
+        widget.onExit?.call(exitMetadata);
       }),
       PlaidLink.onSuccess.listen((successMetadata) {
         widget.onEnrollment?.call(
           successMetadata.publicToken,
           successMetadata.metadata,
         );
+      }),
+      PlaidLink.onEvent.listen((event) {
+        widget.onEvent?.call(event);
       }),
     ];
 
@@ -45,9 +51,7 @@ class _PluginPageState extends State<PluginPage> {
   }
 
   Future<void> _initLink() async {
-    PlaidLink.create(
-      configuration: LinkTokenConfiguration(token: widget.publicToken),
-    );
+    await PlaidLink.create(configuration: widget.config);
   }
 
   @override

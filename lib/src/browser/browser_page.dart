@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:plaid_universal/src/services/server.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class BrowserPage extends StatefulWidget {
-  final VoidCallback? onExit;
+  final LinkTokenConfiguration config;
   final EnrollmentFn? onEnrollment;
-  final String publicToken;
+  final ValueChanged<LinkExit>? onExit;
+  final ValueChanged<LinkEvent>? onEvent;
+
   const BrowserPage({
     super.key,
-    required this.publicToken,
+    required this.config,
     this.onExit,
     this.onEnrollment,
+    this.onEvent,
   });
 
   @override
@@ -28,9 +32,10 @@ class _BrowserPageState extends State<BrowserPage> {
 
   Future<void> _asyncInitState() async {
     await PlaidServerHandler.setup(
-      publicToken: widget.publicToken,
+      config: widget.config,
       onToken: widget.onEnrollment,
       onExit: widget.onExit,
+      onEvent: widget.onEvent,
     );
     endpoint = await PlaidServerHandler.endpointFuture;
     if (context.mounted) {

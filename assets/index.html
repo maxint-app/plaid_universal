@@ -20,7 +20,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const handler = Plaid.create({
-        token: window.ENV.public_token,
+        ...window.ENV.config,
         onSuccess: async (public_token, metadata) => {
           document.getElementById("text").innerHTML =
             "Successful. Return to the app";
@@ -29,14 +29,26 @@
         onLoad: () => {
           document.getElementById("text").innerHTML = "";
         },
-        onExit: async (err, metadata) => {
+        onExit: async (error, metadata) => {
           document.getElementById("text").innerHTML =
             "Failed. Return to the app";
           await fetch("/plaid", {
             method: "DELETE",
+            body: JSON.stringify({
+              error,
+              metadata,
+            }),
           });
         },
-        onEvent: (eventName, metadata) => {},
+        onEvent: async (name, metadata) => {
+          await fetch("/event", {
+            method: "POST",
+            body: JSON.stringify({
+              name,
+              metadata,
+            }),
+          });
+        },
       });
 
       handler.open();

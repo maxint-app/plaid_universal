@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:plaid_universal/src/browser/browser_page.dart';
 import 'package:plaid_universal/src/plugin/plugin_page.dart';
 import 'package:plaid_universal/src/services/server.dart';
@@ -9,40 +10,45 @@ import 'package:plaid_universal/src/webview/webview_page.dart';
 export 'package:plaid_flutter/plaid_flutter.dart';
 
 class PlaidUniversal extends StatelessWidget {
-  final VoidCallback? onExit;
+  final LinkTokenConfiguration config;
   final EnrollmentFn? onEnrollment;
-  final String publicToken;
+  final ValueChanged<LinkExit>? onExit;
+  final ValueChanged<LinkEvent>? onEvent;
 
   const PlaidUniversal({
     super.key,
-    required this.publicToken,
-    this.onExit,
+    required this.config,
     this.onEnrollment,
+    this.onExit,
+    this.onEvent,
   });
 
   @override
   Widget build(context) {
     if (kIsWeb || kIsMobile) {
       return PluginPage(
-        publicToken: publicToken,
+        config: config,
         onExit: onExit,
         onEnrollment: onEnrollment,
+        onEvent: onEvent,
       );
     }
 
     if (kIsLinux) {
       // Windows 10 1809
       return BrowserPage(
-        publicToken: publicToken,
+        config: config,
         onExit: onExit,
         onEnrollment: onEnrollment,
+        onEvent: onEvent,
       );
     }
 
     return WebviewPage(
-      publicToken: publicToken,
+      config: config,
       onExit: onExit,
       onEnrollment: onEnrollment,
+      onEvent: onEvent,
     );
   }
 }

@@ -1,39 +1,96 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Plaid Universal
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+Plaid Link for every Flutter platform.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+See [Plaid Link documentation](https://plaid.com/docs/link/) to learn how to use it
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
-## Features
+## Configurations
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### Requirements
+Fulfill 
+- [`flutter_inappwebview` Requirements](https://pub.dev/packages/flutter_inappwebview#requirements)
 
-## Getting started
+### Web
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add following to your `web/index.html`'s `<head>` section
+
+```html
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+```
+
+### macOS
+
+Follow [macOS Setup](https://inappwebview.dev/docs/intro/#setup-macos) to setup `flutter_inappwebview` for macOS.
+
+
+## Install
+
+Add `plaid_universal` via `pub`:
+
+```bash
+$ flutter pub add plaid_universal
+```
+
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
 ```dart
-const like = 'sample';
+import 'package:flutter/material.dart';
+import 'package:plaid_universal/plaid_universal.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Plaid Universal Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(title: 'Plaid Universal Demo'),
+      );
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              final result = await Navigator.of(context).push<String>(
+                MaterialPageRoute(
+                  builder: (context) => const PlaidUniversal(
+                    linkToken: "your generated link token",
+                    onSuccess: (publicToken, metadata){
+                      Navigator.pop(context, publicToken);
+                    },
+                    onError: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              );
+              print(result);
+            },
+            child: const Text("Connect"),
+          ),
+        ),
+      );
+}
 ```
 
-## Additional information
+## Publisher
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+[Maxint.com](https://maxint.com)
+
+## License
+
+[MIT](/LICENSE)

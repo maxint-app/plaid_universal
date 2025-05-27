@@ -2,18 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:plaid_universal/src/services/server.dart';
 
 class WebviewPage extends StatefulWidget {
-  final VoidCallback? onExit;
   final EnrollmentFn? onEnrollment;
-  final String publicToken;
+  final ValueChanged<LinkExit>? onExit;
+  final ValueChanged<LinkEvent>? onEvent;
+  final LinkTokenConfiguration config;
 
   const WebviewPage({
     super.key,
-    required this.publicToken,
-    this.onExit,
+    required this.config,
     this.onEnrollment,
+    this.onExit,
+    this.onEvent,
   });
 
   @override
@@ -27,9 +30,10 @@ class WebviewPageState extends State<WebviewPage> {
   void initState() {
     super.initState();
     PlaidServerHandler.setup(
-      publicToken: widget.publicToken,
+      config: widget.config,
       onToken: widget.onEnrollment,
       onExit: widget.onExit,
+      onEvent: widget.onEvent,
     );
   }
 
