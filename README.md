@@ -93,4 +93,4 @@ class MyHomePage extends StatelessWidget {
 
 ## License
 
-[MIT](/LICENSE)
+[MPL 2.0](/LICENSE)
