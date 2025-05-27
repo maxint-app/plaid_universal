@@ -33,7 +33,7 @@ abstract class PlaidServerHandler {
     final port = Random().nextInt(10000) + 10000;
     final app = Alfred();
 
-    app.all("*", cors(origin: "localhost"));
+    app.all("*", cors(origin: "localhost:$port"));
 
     app.get("/plaid", (req, res) async {
       res.headers.contentType = ContentType.html;
@@ -51,6 +51,22 @@ abstract class PlaidServerHandler {
             </script>
             """),
       );
+
+      res.headers.set(
+        'Content-Security-Policy',
+        "default-src https://cdn.plaid.com/; "
+            "script-src 'self' 'unsafe-inline' https://cdn.plaid.com/link/v2/stable/link-initialize.js; "
+            "connect-src 'self' https://*.plaid.com; "
+            "frame-src https://cdn.plaid.com/; "
+            "frame-ancestors 'none'; ",
+      );
+      res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      res.headers.set('Pragma', 'no-cache');
+      res.headers.set('Expires', '0');
+      res.headers.set('X-Content-Type-Options', 'nosniff');
+      res.headers.set('X-Frame-Options', 'DENY');
+      res.headers.set('Referrer-Policy', 'no-referrer');
+
       return dom.outerHtml;
     });
 
@@ -86,7 +102,7 @@ abstract class PlaidServerHandler {
       res.send("OK");
     });
 
-    final serverHandle = await app.listen(port);
+    final serverHandle = await app.listen(port, "127.0.0.1");
 
     _initialized = true;
     _endpointCompleter.complete("http://localhost:$port/plaid");
