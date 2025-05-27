@@ -1,6 +1,6 @@
 # Plaid Universal
 
-Plaid Link for every Flutter platform.
+Plaid Link for Flutter platform supporting iOS, Android, MacOS, Linux, Windows and Web.
 
 See [Plaid Link documentation](https://plaid.com/docs/link/) to learn how to use it
 
