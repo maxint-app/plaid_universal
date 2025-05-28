@@ -1,6 +1,6 @@
 name: plaid_universal
-description: Plaid Link for Flutter platform supporting iOS, Android, MacOS, Linux, Windows and Web by [maxint.com](https://maxint.com)
-version: 0.1.0
+description: Plaid Link for Flutter platform supporting iOS, Android, MacOS, Linux, Windows and Web by maxint.com
+version: 0.1.0+1
 homepage: https://github.com/maxint-app/plaid_universal
 repository: https://github.com/maxint-app/plaid_universal
 
