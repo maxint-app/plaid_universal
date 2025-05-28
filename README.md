@@ -1,15 +1,12 @@
 # Plaid Universal
 
-Plaid Link for Flutter platform supporting iOS, Android, MacOS, Linux, Windows and Web.
+Plaid Link for Flutter platform supporting iOS, Android, MacOS, Linux, Windows and Web by [maxint.com](https://maxint.com)
 
-See [Plaid Link documentation](https://plaid.com/docs/link/) to learn how to use it
+See [Plaid Link documentation](https://plaid.com/docs/link/) to learn how to use it.
 
+Also checkout [`plaid_flutter`](https://pub.dev/packages/plaid_flutter) package to configure plaid for Android, iOS and Web
 
 ## Configurations
-
-### Requirements
-Fulfill 
-- [`flutter_inappwebview` Requirements](https://pub.dev/packages/flutter_inappwebview#requirements)
 
 ### Web
 
@@ -18,11 +15,6 @@ Add following to your `web/index.html`'s `<head>` section
 ```html
 <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 ```
-
-### macOS
-
-Follow [macOS Setup](https://inappwebview.dev/docs/intro/#setup-macos) to setup `flutter_inappwebview` for macOS.
-
 
 ## Install
 
@@ -68,11 +60,13 @@ class MyHomePage extends StatelessWidget {
               final result = await Navigator.of(context).push<String>(
                 MaterialPageRoute(
                   builder: (context) => const PlaidUniversal(
-                    linkToken: "your generated link token",
-                    onSuccess: (publicToken, metadata){
+                    linkToken: LinkTokenConfiguration(
+                      token: "your generated link token"
+                    ),
+                    onEnrollment: (publicToken, metadata){
                       Navigator.pop(context, publicToken);
                     },
-                    onError: (){
+                    onExit: (exit){
                       Navigator.pop(context);
                     },
                   ),
