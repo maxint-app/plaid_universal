@@ -30,6 +30,7 @@
           document.getElementById("text").innerHTML = "";
         },
         onExit: async (error, metadata) => {
+          console.error("[PlaidLink] Error linking account:", error);
           document.getElementById("text").innerHTML =
             "Failure! We were unable to link your account. Please try again. You can close this window and return to the app.";
           await fetch("/plaid", {
