@@ -97,8 +97,14 @@ abstract class PlaidServerHandler {
 
     app.delete("/plaid", (req, res) async {
       final body = jsonDecode(await req.body as String) as Map<String, dynamic>;
+      final camelizedBody = body.camelizeKeys();
 
-      onExit?.call(LinkExit.fromJson(body.camelizeKeys()));
+      //! Plaid institution structure is changed but not updated
+      //! but did not update their plaid_flutter package.
+      camelizedBody["metadata"]["institution"]["id"] =
+          camelizedBody["metadata"]["institution"]["institutionId"];
+
+      onExit?.call(LinkExit.fromJson(camelizedBody));
       res.send("OK");
     });
 
