@@ -55,6 +55,8 @@ abstract class PlaidServerHandler {
       res.headers.set(
         'Content-Security-Policy',
         "default-src https://cdn.plaid.com/; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src https://fonts.gstatic.com; "
             "script-src 'self' 'unsafe-inline' https://cdn.plaid.com/link/v2/stable/link-initialize.js; "
             "connect-src 'self' https://*.plaid.com; "
             "frame-src https://cdn.plaid.com/; "
