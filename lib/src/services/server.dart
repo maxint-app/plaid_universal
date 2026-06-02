@@ -54,12 +54,14 @@ abstract class PlaidServerHandler {
 
       res.headers.set(
         'Content-Security-Policy',
-        "default-src https://cdn.plaid.com/; "
+        "default-src 'self' https://cdn.plaid.com; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            "font-src https://fonts.gstatic.com; "
-            "script-src 'self' 'unsafe-inline' https://cdn.plaid.com/link/v2/stable/link-initialize.js; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "img-src 'self' data: https:; "
+            "script-src 'self' 'unsafe-inline' https://cdn.plaid.com; "
             "connect-src 'self' https://*.plaid.com; "
-            "frame-src https://cdn.plaid.com/; "
+            "child-src 'self' blob: https://cdn.plaid.com; "
+            "frame-src 'self' https://cdn.plaid.com; "
             "frame-ancestors 'none'; ",
       );
       res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');

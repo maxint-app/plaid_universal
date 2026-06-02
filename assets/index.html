@@ -276,6 +276,9 @@
       });
 
       handler.open();
+      // Plaid renders its own loading overlay from here on; hide ours to
+      // avoid the two spinners/text overlapping (onLoad fires unreliably on Linux).
+      document.getElementById("loading-state").style.display = "none";
     });
   </script>
 </body>
